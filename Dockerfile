@@ -1,33 +1,11 @@
-ARG IMAGE=ubuntu:24.04
+# Container image that runs your code
+FROM xanderhendriks/stm32cubeide:13.0
 
-# Use base image as extractor for the zip file
-FROM ${IMAGE} AS base
+# Add path to arm-none-eabi toolchain
+ENV PATH="$PATH:/opt/st/stm32cubeide_1.16.0/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.200.202406132123/tools/bin"
 
-RUN apt-get -y update && \
-	apt-get -y install zip
+# Install Ninja
+RUN apt-get install ninja-build
 
-COPY en.st-stm32cubeide_1.16.0_21983_20240628_1741_amd64.deb_bundle.sh.zip /tmp/stm32cubeide-installer.sh.zip
-
-# Unzip STM32 Cube IDE and delete zip file
-RUN unzip -p /tmp/stm32cubeide-installer.sh.zip > /tmp/stm32cubeide-installer.sh && rm /tmp/stm32cubeide-installer.sh.zip
-
-# Set environment variables and labels in the last tag
-FROM ${IMAGE}
-ENV STM32CUBEIDE_VERSION=1.16.0
-ENV DEBIAN_FRONTEND=noninteractive
-ENV LICENSE_ALREADY_ACCEPTED=1
-ENV TZ=Etc/UTC
-ENV PATH="${PATH}:/opt/st/stm32cubeide_${STM32CUBEIDE_VERSION}"
-
-LABEL org.opencontainers.image.authors="Xander Hendriks <xander.hendriks@nx-solutions.com>"
-
-# Install dependencies
-RUN apt-get -y update && \
-	apt-get -y install
-
-COPY --from=base /tmp/stm32cubeide-installer.sh /tmp
-
-# Install STM32 Cube IDE and delete installer
-RUN chmod +x /tmp/stm32cubeide-installer.sh && \
-    /tmp/stm32cubeide-installer.sh && \
-    rm /tmp/stm32cubeide-installer.sh
+# Install CMake
+RUN apt-get update && apt-get -y install cmake

@@ -1,27 +1,27 @@
-# stm32cubeide
+# stm32cubecmake
 
-[stm32cubeide](https://github.com/xanderhendriks/docker-stm32cubeide): the STM32 Cube Integrated Development
-Environment docker container.
+[stm32cubecmake](https://github.com/xanderhendriks/docker-stm32cubeide): the STM32 Cube Integrated Development
+Environment docker container with support of Cmake
 
 ## Build
 
-To create the image `xanderhendriks/stm32cubeide`, execute the following command in the
-`docker-stm32cubeide` folder:
+To create the image `spodshivalov/stm32cubecmake`, execute the following command in the
+`docker-stm32cubecmake` folder:
 
-    docker build -t xanderhendriks/stm32cubeide .
+    docker build -t spodshivalov/stm32cubecmake .
 
 You can now tag the repo and push the changes to the docker hub:
 
-    docker build -t xanderhendriks/stm32cubeide:4.0 .
-    docker push xanderhendriks/stm32cubeide:4.0
+    docker build -t spodshivalov/stm32cubecmake:1.0 .
+    docker push spodshivalov/stm32cubecmake:1.0
 
 ## Run
 
-    $ docker pull xanderhendriks/stm32cubeide
+    $ docker pull spodshivalov/stm32cubecmake
 
-    $ docker run -it --name stm32cubeide \
-        -v c:\GIT\repo:/workspace \
-        xanderhendriks/stm32cubeide
+    $ docker run -it --name stm32cubecmake \
+        -v ~/github/repo:/workspace \
+        spodshivalov/stm32cubecmake
 
 ## STM32 Cube IDE Versions
 
@@ -46,5 +46,5 @@ NOTE: Bug fixes are only implemented for older versions if requested.
 ## Usage
 To build your application from the command line execute the following commands:
 
-    stm32cubeide --launcher.suppressErrors -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -data /tmp/stm-workspace -import /workspace/applications/sample_application/targets/STM32
-    headless-build.sh -data /tmp/stm-workspace -build sample_application/Debug
+    cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -G Ninja  -S /workspace/ -B /workspace/docker-cmake-build-debug
+    cmake --build /workspace/docker-cmake-build-debug --target all
